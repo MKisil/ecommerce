@@ -1,0 +1,6 @@
+Вітаємо, {{ user }}!
+
+Перейдіть по цьому посиланні, щоб активувати свій обліковий запис shoppica:
+{{ scheme }}://{{ site }}{% url 'django_registration_activate' activation_key=activation_key %}?user={{ user.id }}
+
+У вас є {{ expiration_days }} день для того, щоб це зробити.

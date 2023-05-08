@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div id="content" class="container_16">
+    <div class="grid_16">
+    <div class="form-error">{{ form.non_field_errors }}</div>
+      <form id="create" class="clearfix" method="post">
+        <h2 class="s_title_1"><span class="s_secondary_color">Form</span> Register</h2>
+        <div class="clear"></div>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-error">{{ field.errors }}</div>
+          <p><label class="form-label" for="{{ field.id_for_label }}">{{field.label}}: </label>{{ field }}</p>
+        {% endfor %}
+
+        <a class="s_button_1 s_main_color_bgr left" onclick="$('#create').submit();"><span class="s_text">Register</span></a>
+      </form>
+      <br />
+      <br />
+    </div>
+  </div>
+{% endblock %}

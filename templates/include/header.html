@@ -1,0 +1,89 @@
+{% load static %}
+{% load shop_filters %}
+<div id="header" class="container_12">
+  <div class="grid_12">
+
+    <a id="site_logo" href="{% url 'shop:home' %}">Shoppica store - Premium e-Commerce Theme</a>
+
+    <div id="system_navigation" class="s_nav">
+      <ul class="s_list_1 clearfix">
+        <li><a href="{% url 'shop:home' %}">Home</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'orders-list' %}">{{ user.username }}</a></li>
+          <li><a href="{% url 'logout' %}">Log Out</a></li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Log In or Register</a></li>
+        {% endif %}
+        <li><a href="{% url 'cart-view' %}">Shopping Cart</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+      </ul>
+    </div>
+
+{#    <div id="site_search">#}
+{#      <a id="show_search" href="javascript:;" title="Search:"></a>#}
+{#      <div id="search_bar" class="clearfix">#}
+{#        <form action="{% url 'search' %}" method="post">#}
+{#          <input type="text" id="filter_keyword"/>#}
+{#          <select id="filter_category_id">#}
+{#            <option value="0">All Categories</option>#}
+{#            <option value="1">Category 1</option>#}
+{#            <option value="2">Category 2</option>#}
+{#          </select>#}
+{#          <a class="s_button_1 s_secondary_color_bgr"><span class="s_text">Go</span></a> <a#}
+{#          class="s_advanced s_main_color" href="">Advanced Search</a>#}
+{#        </form>#}
+{#      </div>#}
+{#    </div>#}
+
+{#    <div id="language_switcher" class="s_switcher"><span class="s_selected">US Dollar</span>#}
+{#      <ul class="s_options">#}
+{#        <li><a href="">Euro</a></li>#}
+{#        <li><a href="">Pound Sterling</a></li>#}
+{#        <li><a href="">US Dollar</a></li>#}
+{#      </ul>#}
+{#    </div>#}
+{##}
+{#    <div id="currency_switcher" class="s_switcher"><span class="s_selected"><img src="{% static 'images/flags/gb.png' %}"#}
+{#                                                                                 alt="English"/> English</span>#}
+{#      <ul class="s_options">#}
+{#        <li><a href=""><img src="{% static 'images/flags/gb.png' %}" alt="English"/> English</a></li>#}
+{#        <li><a href=""><img src="{% static 'images/flags/de.png' %}" alt="Deutsch"/> Deutsch</a></li>#}
+{#      </ul>#}
+{#    </div>#}
+
+    <div id="categories" class="s_nav">
+      <ul>
+        <li id="menu_home"><a href="{% url 'shop:home' %}">Home</a></li>
+        {% for category in categories %}
+          <li><a href="{% url 'shop:products-category' category.slug %}">{{ category }}</a>
+            <div class="s_submenu">
+              <h3>Inside {{ category }}</h3>
+              <ul class="s_list_1 clearfix">
+                {% for subcategory in category.subcategories.all %}
+                  <li><a href="{% url 'shop:products-subcategory' subcategory.slug %}">{{ subcategory }}</a></li>
+                {% endfor %}
+              </ul>
+              <span class="clear border_eee"></span>
+              <h3>{{ category }} Brands</h3>
+              <ul class="s_list_1 clearfix">
+                {% for manufacturer in category.manufacturers.all %}
+                  <li><a href="{% url 'shop:products-manufacturer' manufacturer.slug %}">{{ manufacturer }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="cart_menu" class="s_nav">
+      <a href="{% url 'cart-view' %}"><span class="s_icon"></span> <small class="s_text">Cart</small><span
+        class="s_grand_total s_main_color">${{ cart.total_cost|price_with_vat:17.5|floatformat:2 }}</span></a>
+      <div class="s_submenu s_cart_holder">
+        <p class="s_mb_0">{{ cart|length }} items</p>
+      </div>
+    </div>
+
+  </div>
+</div>

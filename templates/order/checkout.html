@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block head %}
+  <script type="text/javascript">
+      $(document).ready(function () {
+          if (window.PIE) {
+              $('.rounded').each(function () {
+                  PIE.attach(this);
+              });
+          }
+      });
+  </script>
+  <script type="text/javascript">
+      $(function () {
+          $("#checkout form").accordion({
+              autoHeight: false
+          });
+      });
+  </script>
+{% endblock head %}
+{% block content %}
+  <!-- ********************** -->
+  <!--      C O N T E N T     -->
+  <!-- ********************** -->
+  <div id="content" class="container_12">
+    <div id="checkout" class="grid_12">
+      <div class="form-error">{{ order_form.non_field_errors }}</div>
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="{{ message.tags }}">
+              <strong>{{ message|safe }}</strong>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <form id="checkout_form" class="s_accordion" action="{% url 'checkout' %}" method="post">
+        <h2>Деталі оплати та адреси</h2>
+          <div>
+            <div class="grid_6 alpha">
+              <h3><span class="s_secondary_color">Ваші</span> Персональні Дані</h3>
+              <div class="form-error">{{ order_form.personal_details.non_field_errors }}</div>
+              {% for field in order_form.personal_details %}
+                <div class="s_row_2{% if loop.last %} s_mb_15{% endif %} clearfix">
+                  <div class="form-error">{{ field.errors }}</div>
+                  <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}:</label>
+                  {{ field }}
+                </div>
+              {% endfor %}
+            </div>
+            <div class="grid_6 omega">
+              <h3><span class="s_secondary_color">Ваша</span> Адреса</h3>
+              <div class="form-error">{{ order_form.address.non_field_errors }}</div>
+              {% for field in order_form.address %}
+                <div class="s_row_2 clearfix">
+                  <div class="form-error">{{ field.errors }}</div>
+                  <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}:</label>
+                  {{ field }}
+                </div>
+              {% endfor %}
+            </div>
+            <div class="clear"></div>
+            <p>
+              <div class="form-error">{{ order_form.delivery_billing_address.errors }}</div>
+              <label for="{{ order_form.delivery_billing_address.id_for_label }}">
+                {{ order_form.delivery_billing_address }}
+                {{ order_form.delivery_billing_address.label }}
+              </label>
+            </p>
+            <div class="clear"></div>
+            <a class="s_button_1 s_main_color_bgr"><span class="s_text">Крок 2 &rsaquo;</span></a>
+            <span class="clear"></span>
+            <br/>
+          </div>
+          <h2>Метод Доставки</h2>
+          <div>
+            <p>Будь ласка, виберіть бажаний спосіб доставки для цього замовлення.</p>
+            <div class="s_row_3 clearfix">
+              <div class="form-error">{{ order_form.shipping_method.errors }}</div>
+              {% for choice in order_form.shipping_method %}
+                <label class="s_radio s_shipping_method clearfix" for="{{ choice.id_for_label }}">
+                  {{ choice.tag }}
+                  <span class="s_desc"><strong>{{ choice.choice_label }}</strong><br/>{#Citylink  (Weight: 0.00kg) - 11.60<span class="s_currency s_after"> eur</span>#}</span>
+                </label>
+              {% endfor %}
+            </div>
+            <div class="clear"></div>
+            <a class="s_button_1 s_ddd_bgr left"><span class="s_text">&lsaquo; Крок 1</span></a>
+            <a class="s_button_1 s_main_color_bgr"><span class="s_text">Крок 3 &rsaquo;</span></a>
+            <span class="clear"></span>
+            <br/>
+          </div>
+          <h2 class="s_last">Метод Оплати</h2>
+          <div class="s_last">
+            <p>Виберіть бажаний спосіб оплати для цього замовлення.</p>
+            <div class="s_row_3 clearfix grid_7 alpha">
+              <div class="form-error">{{ order_form.payment_method.errors }}</div>
+              {% for choice in order_form.payment_method %}
+                <label class="s_radio s_shipping_method clearfix">
+                  {{ choice.tag }}
+                  <strong>{{ choice.choice_label }}</strong>
+                </label>
+              {% endfor %}
+            </div>
+            <div class="clear"></div>
+            <h3><span class="s_secondary_color">Коментар</span> до замовлення</h3>
+            <div class="s_row_3 clearfix">
+              {{ order_form.order_comment }}
+            </div>
+            <div class="s_row_3 clearfix">
+              <div class="form-error">{{ order_form.terms_and_conditions_accepted.errors }}</div>
+              <label for="{{ order_form.terms_and_conditions_accepted.id_for_label }}">
+                {{ order_form.terms_and_conditions_accepted }}
+                {{ order_form.terms_and_conditions_accepted.label }}
+              </label>
+            </div>
+            <div class="clear"></div>
+            <a class="s_button_1 s_ddd_bgr left"><span class="s_text">&lsaquo; Step 2</span></a>
+            {% csrf_token %}
+            <a class="s_button_1 s_main_color_bgr" onclick="$('#checkout_form').submit();"><span
+              class="s_text">Замовити</span></a>
+            <span class="clear"></span>
+            <br/>
+          </div>
+      </form>
+    </div>
+  </div>
+  <!-- end of content -->
+{% endblock content %}

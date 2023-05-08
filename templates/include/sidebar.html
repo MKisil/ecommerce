@@ -1,0 +1,99 @@
+{% load shop_filters %}
+{% load shop_tags %}
+<div id="right_col" class="grid_3">
+  <div id="cart_side" class="s_box_1 s_cart_holder">
+    <h2 class="s_secondary_color">Shopping Cart</h2>
+    <div id="cart_side_contents">
+      {% for product, product_info in  cart.items %}
+        <div class="s_cart_item">
+          <form action="{% url 'cart-update' product_info.slug %}" method="post">
+            <input type="hidden" name="product" value="{{ product }}">
+            <input type="hidden" name="remove" value="true">
+            <button style="border: none;" class="s_button_remove">&nbsp;</button>
+          </form>
+          <span class="block">{{ product_info.quantity }}x <a href="{% url 'shop:product-detail' product_info.slug %}">{{ product_info.full_name }}</a></span>
+        </div>
+      {% endfor %}
+      <span class="clear s_mb_15 border_eee"></span>
+      <div class="s_total clearfix"><strong class="cart_module_total left">Sub-Total:</strong><span
+        class="cart_module_total">{{ cart.total_cost|floatformat:2 }}<span class="s_currency s_after"> eur</span></span></div>
+      <div class="s_total clearfix"><strong class="cart_module_total left">VAT 17.5%:</strong><span
+        class="cart_module_total">{{ cart.total_cost|vat_of_price:17.5|floatformat:2 }}<span class="s_currency s_after"> eur</span></span></div>
+      <div class="s_total clearfix"><strong class="cart_module_total left">Total:</strong><span
+        class="cart_module_total">{{ cart.total_cost|price_with_vat:17.5|floatformat:2 }}<span class="s_currency s_after"> eur</span></span></div>
+      <span class="clear s_mb_15"></span>
+      <div class="align_center clearfix">
+        <a class="s_button_1 s_secondary_color_bgr s_ml_0" href="{% url 'cart-view' %}"><span class="s_text">View Cart</span></a>
+        <a class="s_button_1 s_secondary_color_bgr" href="{% url 'checkout' %}"><span class="s_text">Checkout</span></a>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="categories_module" class="s_box">
+    <h2>Categories</h2>
+    <div class="s_list_1">
+      <ul>
+        {% for category in categories %}
+          <li><a href="{% url 'shop:products-category' category.slug %}">{{ category.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div id="brands_module" class="s_box">
+    <h2>Brands</h2>
+    <select onchange="location = this.value">
+      {% if selected_manufacturer %}
+        <option> {{ selected_manufacturer }}</option>
+      {% else %}
+        <option> --- Please Select ---</option>
+      {% endif %}
+      {% get_manufacturers as manufacturers %}
+      {% for manufacturer in manufacturers %}
+        <option value="{% url 'shop:products-manufacturer' manufacturer.slug %}?category_slug={{ view.kwargs.category_slug }}&subcategory_slug={{ view.kwargs.subcategory_slug }}">{{ manufacturer.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  {% if bestsellers %}
+    <div id="bestseller_side" class="s_box clearfix">
+      <h2>Bestsellers</h2>
+      {% for product in bestsellers %}
+        <div class="s_item s_size_1 clearfix">
+          <a class="s_thumb" href="{{ product.get_absolute_url }}"><img src="{{ product.photo.url }}" width="38" height="38"
+                                                      alt="{{ product.name }}"/></a>
+          <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+          <p><a href="{{ product.get_absolute_url }}"><span class="s_main_color"><span class="s_currency s_before">$</span>{{ product.get_actual_price }}</span></a>
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+{#  <div id="information_module" class="s_box">#}
+{#    <h2>Information</h2>#}
+{#    <ul class="s_list_1">#}
+{#      <li><a href="static.html">About Shoppica</a></li>#}
+{#      <li><a href="static.html">Privacy Policy</a></li>#}
+{#      <li><a href="static.html">Terms &amp; Conditions</a></li>#}
+{#      <li><a href="contacts.html">Contact Us</a></li>#}
+{#      <li><a href="sitemap.html">Site Map</a></li>#}
+{#    </ul>#}
+{#  </div>#}
+
+  {% if featured %}
+    <div id="featured_side" class="s_box clearfix">
+      <h2>Featured</h2>
+      {% for product in featured %}
+        <div class="s_item s_size_1 clearfix">
+          <a class="s_thumb" href="{{ product.get_absolute_url }}"><img src="{{ product.photo.url }}" width="38" height="38"
+                                                      alt="{{ product.name }}"/></a>
+          <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+          <p><a href="{{ product.get_absolute_url }}"><span class="s_main_color"><span class="s_currency s_before">$</span>{{ product.get_actual_price }}</span></a>
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

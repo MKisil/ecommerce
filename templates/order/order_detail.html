@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load shop_filters %}
+{% block content %}
+  <!-- ********************** -->
+  <!--      C O N T E N T     -->
+  <!-- ********************** -->
+  <div id="content" class="container_16">
+
+    <div id="order_details" class="grid_16">
+
+      <div class="s_order clearfix">
+
+        <p class="s_status"><span class="s_999">Invoice ID:</span> <span class="s_secondary_color">INV{{ order.id }}</span></p>
+        <p class="s_id"><span class="s_999">Order ID</span> <span class="s_main_color">#{{ order.id }}</span></p>
+
+        <span class="clear border_eee"></span>
+
+        <dl class="grid_5 alpha clearfix">
+          <dt>E-Mail</dt>
+          <dd>{{ order.personaldetails.email }}</dd>
+          <dt>Telephone</dt>
+          <dd>{{ order.personaldetails.telephone }}</dd>
+          <dt>Shipping Method</dt>
+          <dd>{{ order.shipping_method.name }}</dd>
+          <dt>Payment Method</dt>
+          <dd>{{ order.payment_method.name }}</dd>
+        </dl>
+
+        <span class="clear border_eee"></span>
+
+        <div class="grid_7 alpha">
+          <h2>Payment Address</h2>
+          <p>{{ order.personaldetails.first_name }} {{ order.personaldetails.last_name }}<br/>{{ order.address.city }}<br/>{{ order.address.city }} {{ order.address.post_code }}<br/>{{ order.address.address1 }}</p>
+        </div>
+        <div class="grid_7 omega">
+          <h2>Shipping Address</h2>
+          <p>{{ order.personaldetails.first_name }} {{ order.personaldetails.last_name }}<br/>{{ order.address.city }}<br/>{{ order.address.city }} {{ order.address.post_code }}<br/>{{ order.address.address1 }}</p>
+        </div>
+
+        <span class="clear border_eee"></span>
+
+        <h2>Product</h2>
+        <table class="s_table" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <th>Product</th>
+            <th>Model</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th width="130">Total</th>
+          </tr>
+          {% for item in order.items.all %}
+            <tr>
+              <td class="align_left"><strong>{{ item.full_name }}</strong></td>
+              <td>{{ item.model }}</td>
+              <td>{{ item.quantity }}</td>
+              <td><span class="s_currency s_before">$</span>{{ item.unit_price }}</td>
+              <td><span class="s_currency s_before">$</span>{{ item.unit_price|multiply:item.quantity|floatformat:2 }}</td>
+            </tr>
+          {% endfor %}
+          <tr>
+            <td class="align_right" colspan="4"><strong>Sub-Total(+VAT 17.5):</strong></td>
+            <td><span class="s_currency s_before">$</span>{{ order.total_price|price_with_vat:17.5|floatformat:2 }}</td>
+          </tr>
+          <tr>
+            <td class="align_right" colspan="4"><strong>{{ order.shipping_method.name }}:</strong></td>
+            <td><span class="s_currency s_before">$</span>{{ order.shipping_method.cost }}</td>
+          </tr>
+          <tr>
+            <td class="align_right" colspan="4"><strong>:</strong></td>
+            <td><span class="s_currency s_before">$</span>0.00</td>
+          </tr>
+          <tr class="last">
+            <td class="align_right" colspan="4"><strong>Total:</strong></td>
+            <td class="s_secondary_color"><span class="s_currency s_before">$</span>{{ order.total_price|price_with_vat:17.5|add:order.shipping_method.cost|floatformat:2 }}</td>
+          </tr>
+        </table>
+
+
+        <h2>Order History</h2>
+        <table class="s_table" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <th>Date Added</th>
+            <th>Status</th>
+            <th>Comments</th>
+          </tr>
+          {% for event in order.history.all %}
+            {% if event.status == 'Created' %}
+              <tr>
+                <td>{{ event.date|date:'d/m/Y' }}</td>
+                <td>{{ event.status }}</td>
+                <td>{{ order.comment }}</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td>{{ event.date|date:'d/m/Y' }}</td>
+                <td>{{ event.status }}</td>
+                <td></td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </table>
+
+      </div>
+      {% if order.is_active and not order.sent %}
+        <form action="{% url 'order-detail' order.pk %}" method="post">
+          <input type="hidden" name="order_pk" value="{{ order.pk }}">
+          <button class="s_button_1 s_main_color_bgr" type="submit"><span class="s_text">Скасувати</span></button>
+        </form>
+      {% endif %}
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+  <!-- end of content -->
+{% endblock content %}

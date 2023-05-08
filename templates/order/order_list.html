@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load shop_filters %}
+{% block content %}
+  <div id="content" class="container_12">
+
+    <div id="order_history" class="grid_12">
+
+      <div class="s_listing s_grid_view clearfix">
+        {% for order in orders %}
+          <div class="grid_4">
+            <div class="s_order clearfix">
+              <p class="s_id"><span class="s_999">Order ID:</span> <span class="s_main_color">#{{ order.id }}</span></p>
+
+              <p class="s_status s_secondary_color">
+                {% if order.sent and order.received %}
+                  Complete
+                {% elif order.sent %}
+                  Shipped
+                {% elif not order.is_active %}
+                  Canceled
+                {% elif not order.sent and order.is_active %}
+                  Awaiting shipment
+                {% endif %}
+              </p>
+              <span class="clear"></span>
+              <dl class="clearfix">
+                <dt>Date Added::</dt>
+                <dd>{{ order.date_create|date:'d/m/Y' }}</dd>
+                <dt>Customer::</dt>
+                <dd>{{ order.personaldetails.first_name }} {{ order.personaldetails.last_name }}</dd>
+
+                <dt>Products::</dt>
+                <dd>{{ order.products }}</dd>
+              </dl>
+              <span class="clear border_eee"></span>
+              <br/>
+              <p class="s_total left">{{ order.total_price|price_with_vat:17.5|floatformat:2 }}<span class="s_currency s_after"> $</span></p>
+
+              <a href="{% url 'order-detail' order.pk %}" class="s_main_color right"><strong>View</strong></a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+{#      <a href="invoice.html" class="s_button_1 s_main_color_bgr"><span class="s_text">Continue</span></a>#}
+
+      <div class="clear"></div>
+      <br/>
+
+      <br/>
+
+    </div>
+
+  </div>
+  <!-- end of content -->
+{% endblock content %}

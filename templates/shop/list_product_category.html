@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- ********************** -->
+<!--     I N T R O          -->
+<!-- ********************** -->
+
+<div id="intro">
+  <div id="intro_wrap">
+    <div class="container_12">
+      <div id="breadcrumbs" class="grid_12">
+        <a href="{% url 'shop:home' %}">Home</a>
+        &gt;
+        <a href="">Category</a>
+      </div>
+      <h1>Category</h1>
+    </div>
+  </div>
+</div>
+<!-- end of intro -->
+
+
+<!-- ********************** -->
+<!--      C O N T E N T     -->
+<!-- ********************** -->
+<div id="content" class="container_12">
+
+
+  <div id="category" class="grid_9">
+
+    <div class="s_subcategories s_grid_view s_listing clearfix">
+      {% for subcategory in subcategories %}
+        <div class="s_subcategory">
+          <h4><a href="{% url 'shop:products-subcategory' subcategory.slug %}">{{ subcategory.name }}</a></h4>
+        </div>
+      {% endfor %}
+      <div class="clear"></div>
+    </div>
+
+    <div id="listing_options">
+      <div id="listing_sort" class="s_switcher">
+        <span class="s_selected">{% if ordering_name %}{{ ordering_name }}{% else %}Default{% endif %}</span>
+        <ul class="s_options" style="display: none;">
+          <li><a href="?ordering=name">Name A - Z</a></li>
+          <li><a href="?ordering=-name">Name Z - A</a></li>
+          <li><a href="?ordering=price">Price Low &gt; High</a></li>
+          <li><a href="?ordering=-price">Price High &gt; Low</a></li>
+          <li><a href="?ordering=-average_rating">Rating Highest</a></li>
+          <li><a href="?ordering=average_rating">Rating Lowest</a></li>
+          <li><a href="?ordering=model">Model A - Z</a></li>
+          <li><a href="?ordering=-model">Model Z - A</a></li>
+        </ul>
+      </div>
+{#      <div id="view_mode" class="s_nav">#}
+{#        <ul class="clearfix">#}
+{#          <li id="view_grid"><a href="listing_2.html"><span class="s_icon"></span>Grid</a></li>#}
+{#          <li id="view_list" class="s_selected"><a href="listing_1.html"><span class="s_icon"></span>List</a></li>#}
+{#        </ul>#}
+{#      </div>#}
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="s_listing s_list_view clearfix">
+      {% for product in object_list %}
+        <div class="s_item clearfix">
+          <div class="grid_3 alpha"> <a class="s_thumb" href="{{ product.get_absolute_url }}"><img src="{{ product.photo.url}}" title="{{ product.name}}" alt="{{ product.name}}" /></a> </div>
+          <div class="grid_6 omega">
+            <h3><a href="{{ product.get_absolute_url }}">{{ product.name}}</a></h3>
+            <p class="s_model">Product 4</p>
+            {% if product.discount %}
+              <p class="s_price s_promo_price"><span class="s_old_price"><span class="s_currency s_before">£</span>{{ product.price|floatformat:2 }}</span> <span class="s_currency s_before">£</span>{{ product.get_actual_price|floatformat:2 }}</p>
+            {% else %}
+              <p class="s_price"><span class="s_currency s_before">$</span>{{ product.price }}</p>
+            {% endif %}
+            <p class="s_description">{{ product.description|truncatewords:20 }}</p>
+            <a class="s_button_add_to_cart" href="{{ product.get_absolute_url }}"><span class="s_icon_16"><span class="s_icon"></span>Add to Cart</span></a>
+          </div>
+        </div>
+        <div class="clear"></div>
+      {% endfor %}
+    </div>
+
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a class="links" href="?page={{ page_obj.previous_page_number }}"><</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+        <a class="links" href="?page={{ page_obj.next_page_number }}">></a>
+      {% endif %}
+      <div class="results">
+        Showing {{ page_obj.number }} to {{ page_obj.paginator.num_pages }} of {{ page_obj.paginator.num_pages }} ({{ page_obj.number }} Pages)
+      </div>
+    </div>
+
+  </div>
+  {# block sidebar #}
+  {% include '../include/sidebar.html' %}
+  {# endblock sidebar #}
+</div>
+{% endblock content %}

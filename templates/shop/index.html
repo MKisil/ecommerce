@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- ********************** -->
+<!--     I N T R O          -->
+<!-- ********************** -->
+<div id="intro">
+  <div id="intro_wrap">
+    <div id="image_intro" class="container_12">
+      <div id="image_intro_preview" style="height: 320px">
+        <div class="slides_container">
+          {% for banner in banners %}
+            <div class="slideItem" style="display: none">
+              {% if banner.url %}
+                <a href="#"><img src="{{ banner.image.url }}" width="920" height="320" /></a>
+              {% else %}
+                <img src="{{ banner.image.url }}" width="920" height="320" />
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <span class="s_button_prev_holder"><a class="s_button_prev" href="javascript:;"></a></span>
+        <span class="s_button_next_holder"><a class="s_button_next" href="javascript:;"></a></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{% static 'js/jquery/jquery.slides.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/shoppica.images_slide.js' %}"></script>
+<script type="text/javascript">
+  var slideEffect = 'slide';
+
+</script>
+<!-- end of intro -->
+
+
+<!-- ********************** -->
+<!--      C O N T E N T     -->
+<!-- ********************** -->
+<div id="content" class="container_12">
+
+  <div id="welcome" class="grid_12">
+    <h2>Welcome to Shoppica store</h2>
+    <p><a href="">Shoppica</a> is a stylish premium OpenCart theme (currently supported versions are 1.4.9.3/1.4.9.4).
+      The clean and modern design allows you to use the theme for every kind of online shop: clothes, accessories,
+      gifts, electronics, furniture, health and cosmetics store and so on.</p>
+    <p> One of the main features is to choose different types of slideshows for every category, so you can personalise
+      every part of your store. Shoppica allows you to customize product listing size, column position and layout type,
+      giving you the power to easy adapt the theme to your produc or service. With the color themer tool you can change
+      site&#39;s elements and make your store unique and stand out of the crowd.</p>
+  </div>
+
+  <div class="clear"></div>
+
+  <div id="special_home" class="grid_12">
+    <h2 class="s_title_1"><span class="s_main_color">Specials</span> Products</h2>
+    <div class="clear"></div>
+    <div class="s_listing s_grid_view clearfix">
+      {% if special_products %}
+        {% for product in special_products %}
+          <div class="s_item grid_2"><a class="s_thumb" href="{% url 'shop:product-detail' product.slug %}"><img src="{{ product.photo.url }}"
+                                                                                 title="{{ product }}" alt="{{ product }}"/></a>
+            <h3><a href="{% url 'shop:product-detail' product.slug %}">{{ product }}</a></h3>
+            <p class="s_model">{{ product.model }}</p>
+            <p class="s_price s_promo_price"><span class="s_old_price"><span class="s_currency s_before">$</span>{{ product.price|floatformat:"2g" }}</span><span
+              class="s_currency s_before">$</span>{{ product.get_actual_price|floatformat:"2g" }}</p>
+            <a class="s_button_add_to_cart" href="product_detail.html"><span class="s_icon_16"><span class="s_icon"></span>Add to Cart</span></a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <h3>There are currently no special products</h3>
+      {% endif %}
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div id="latest_home" class="grid_12">
+    <h2 class="s_title_1"><span class="s_main_color">Latest</span> Products</h2>
+    <div class="clear"></div>
+    <div class="s_listing s_grid_view clearfix">
+      {% for product in latest_products %}
+        <div class="s_item grid_2"><a class="s_thumb" href="{% url 'shop:product-detail' product.slug %}"><img src="{{ product.photo.url }}"
+                                                                             title="{{ product }}" alt="{{ product }}"/></a>
+        <h3><a href="{% url 'shop:product-detail' product.slug %}">{{ product }}</a></h3>
+        <p class="s_model">{{ product.model }}</p>
+        {% if product.discount %}
+        <p class="s_price s_promo_price"><span class="s_old_price"><span class="s_currency s_before">$</span>{{ product.price|floatformat:"2g" }}</span><span
+          class="s_currency s_before">$</span>{{ product.get_actual_price }}</p>
+        {% else %}
+        <p class="s_price"><span class="s_currency s_before">$</span>{{ product.price|floatformat:"2g" }}</p>
+        {% endif %}
+        <a class="s_button_add_to_cart" href="{{ product.get_absolute_url }}"><span class="s_icon_16"><span class="s_icon"></span>Add to Cart</span></a>
+      `</div>
+      {% endfor %}
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+<!-- end of content -->
+{% endblock content %}

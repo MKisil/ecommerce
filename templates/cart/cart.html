@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load shop_filters %}
+{% block content %}
+<!-- ********************** -->
+<!--     I N T R O          -->
+<!-- ********************** -->
+<div id="intro">
+  <div id="intro_wrap">
+    <div class="container_12">
+      <div id="breadcrumbs" class="grid_12">
+        <a href="{% url 'shop:home' %}">Home</a>
+        &gt; <a href="{% url 'cart-view' %}">Basket</a>
+      </div>
+      <h1>Shopping Cart</h1>
+    </div>
+  </div>
+</div>
+<!-- end of intro -->
+
+
+<!-- ********************** -->
+<!--      C O N T E N T     -->
+<!-- ********************** -->
+<div id="content" class="container_12">
+
+  <div id="shopping_cart" class="grid_12">
+
+    <form id="cart" class="clearfix" action="{% url 'cart-view' %}" method="post">
+      {% csrf_token %}
+      <table class="s_table_1" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <th width="65">Remove</th>
+          <th width="60">Image</th>
+          <th width="320">Name</th>
+          <th>Model</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+        </tr>
+        {% for product, product_info in products.items %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            <td valign="middle"><input type="checkbox" name="remove_{{ product }}" value="{{ product }}"/></td>
+            <td valign="middle"><a href="{% url 'shop:product-detail' product_info.slug %}"><img src="{{ product_info.image }}" width="60" height="60"
+                                                            alt="Panasonic Lumix"/></a></td>
+            <td valign="middle"><a href="{% url 'shop:product-detail' product_info.slug %}"><strong>{{ product_info.full_name }}</strong></a></td>
+            <td valign="middle">{{ product_info.model }}</td>
+            <td valign="middle"><input type="text" size="3" placeholder="{{ product_info.quantity }}" name="quantity_{{ product }}"/></td>
+            <td valign="middle">{{ product_info.unit_price|floatformat:2 }}<span class="s_currency s_after"> $</span></td>
+            <td valign="middle">{{ product_info.total_price|floatformat:2 }}<span class="s_currency s_after"> $</span></td>
+          </tr>
+        {% endfor %}
+      </table>
+      <br/>
+      <p class="s_total"><strong>Sub-Total:</strong> {{ cart.total_cost|floatformat:2 }}<span class="s_currency s_after"> $</span></p>
+      <p class="s_total"><strong>VAT 17.5%:</strong> {{ cart.total_cost|vat_of_price:17.5|floatformat:2 }}<span class="s_currency s_after"> $</span></p>
+      <p class="s_total s_secondary_color last"><strong>Total:</strong> {{ cart.total_cost|price_with_vat:17.5|floatformat:2 }}<span
+        class="s_currency s_after"> $</span></p>
+
+      <div class="clear"></div>
+      <br/>
+
+      <a class="s_button_1 s_ddd_bgr left" href="{% url 'shop:home' %}"><span class="s_text">Continue Shopping</span></a>
+      {% if products %}
+        <a class="s_button_1 s_main_color_bgr" href="{% if user.is_authenticated %}{% url 'checkout' %}{% else %}{% url 'login' %}{% endif %}"><span class="s_text">Checkout</span></a>
+{#        <a class="s_button_1 s_main_color_bgr" href="{% url 'checkout' %}"><span class="s_text">Checkout</span></a>#}
+      {% endif %}
+      <button class="s_button_1 s_main_color_bgr" type="submit"><span class="s_text">Update</span></button>
+    </form>
+
+  </div>
+
+  <div class="clear"></div>
+  <br/>
+  <br/>
+
+</div>
+<!-- end of content -->
+{% endblock content %}

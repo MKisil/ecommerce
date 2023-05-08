@@ -1,0 +1,26 @@
+{% extends './base.html' %}
+{% block content %}
+  <h3>Помилка: {{ activation_error.message }}</h3>
+  {% if activation_error.code != 'already_activated' and activation_error.code != 'bad_username' %}
+    {% if form %}
+      {{ form.non_field_error }}
+      <form action="{% url 'send_activation_email_again' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Відправити код для повторної активації</button>
+      </form>
+    {% else %}
+      <form action="{% url 'send_activation_email_again' %}" method="post">
+        {% csrf_token %}
+        <p>Для того, щоб ми повторно надіслали вам новий ключ для активації, введіть електронну пошту вашого облікового запису, яку ви використовували при створенні:</p>
+        <label for="input_email">Email:</label>
+        <input type="text" name="email" id="input_email">
+        <br>
+        <br>
+        <button type="submit">Відправити код для повторної активації</button>
+      </form>
+    {% endif %}
+  {% else %}
+    <a href="{% url 'django_registration_register' %}">Створити новий обліковий запис запис</a>
+  {% endif %}
+{% endblock content %}
