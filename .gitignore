@@ -1,16 +1,10 @@
 .idea
-idea
-.DS_Store
+__pycache__/
 
-*.egg-info/
-.installed.cfg
-*.egg
-
-dist
-
+.env
+media
+db.sqlite3
 venv
-
-tools.py
 
 **/migrations/**
 !**/migrations
@@ -18,21 +12,3 @@ tools.py
 *backend/*/migrations/*
 !*backend/*/migrations
 !*backend/*/migrations/__init__.py
-
-__pycache__/
-*/__pycache__/
-*.py[cod]
-.pyc
-*.pyc
-
-log/debug.log
-
-build
-doc
-home.rst
-make.bat
-Makefile
-
-doc-dev
-
-.env

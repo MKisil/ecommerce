@@ -5,7 +5,7 @@ from django.views.generic.edit import FormView
 
 from contact.forms import ContactForm
 from contact.models import ShopAddress, Contact
-from internet_shop import settings
+from config import settings
 
 
 class AboutShoppicaView(TemplateView):
